@@ -2,33 +2,31 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <cctype>
+#include "Misc.h"
 using namespace std;
 
 int winMultiplier(int wins);
 char getRandomCharacter();
-void writeGrid(int rows, int columns, char grid[3][3]); //want 'rows' and 'columns' instead of fixed num
-int countWinningRows(int rows, int columns, char grid[3][3]); //read pointer array works, but idk hot to do that. This will do 
+void writeGrid(char grid[3][3]); 
+int countWinning3(char grid[3][3]);
 
 int main() {
-    int const rows = 3, columns = 3;
-    char grid[rows][columns];
+    char grid[3][3];
     int totalWins = 0;
     int moneyWon, bet;
 
     bet = 10;
     cout << "\nYou're betting " << bet << " kr" << endl << endl;
-    //maybe add a "press any key to start"
     system("pause");
-
     srand(time(0));
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < columns; j++)
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++)
             grid[i][j] = getRandomCharacter();
     }
 
-    writeGrid(rows, columns, grid);
 
-    /*<testing>
+    /*//<testing>
     grid[0][0] = 'X';
     grid[0][1] = 'X';
     grid[0][2] = 'X';
@@ -38,78 +36,14 @@ int main() {
     grid[2][0] = 'X';
     grid[2][1] = 'X';
     grid[2][2] = 'X';
-    </testing>*/
+    *///</testing>
+    writeGrid(grid);
   
-    totalWins = countWinningRows(rows, columns, grid);
+    totalWins = countWinning3(grid);
     cout << "\nTotal winning rows: " << totalWins << endl;
     moneyWon = bet * winMultiplier(totalWins);
-    if (moneyWon != bet) cout << "You got " << moneyWon << " kr"; //only writes if won
-    
-    cout << "end" << endl; //temporary to see if end is reached
+    if (totalWins > 0) cout << "You got " << moneyWon << " kr" << endl; //only writes if won
 }
-
-//<winning olutions>
-//#1: 
-/*
-make check for every posibility. Not coding that here
-*/
-//-----------------------------------------------------------------------------------
-//#2:
-/*
-  // only counting top row, why? Because threeInARow never reset to true
-//checks rows from top to bottom
-  bool threeInARow = true;
-  for (int i = 0; i < rows; i++) { // goes down
-    threeInARow = true;
-    for (int j = 0; j < columns - 1; j++) { // goes right
-      if (grid[i][j] != grid[i][j + 1])
-        threeInARow = false;
-    }
-    if (threeInARow)
-      totalWins++;
-  }
-
-  // for columns
-//checks columns from left to right
-  for (int i = 0; i < columns; i++) { // goes right
-    threeInARow = true;
-    for (int j = 0; j < rows - 1; j++) { // goes down
-      if (grid[j][i] != grid[j + 1][i])
-        threeInARow = false;
-    }
-    if (threeInARow)
-      totalWins++;
-  }
-
-  // field has to be square for this to work. Guess u can't really do diagonal
-  // if not sqaure
-  // for \-diagonal
-//checks diagonal from top-left (0,0) to bottom-right (2,2)
-  threeInARow = true;
-  for (int i = 0; i < rows - 1; i++) {
-    if (grid[i][i] != grid[i + 1][i + 1])
-      threeInARow = false;
-  }
-  if (threeInARow)
-    totalWins++;
-
-  // for /-diagonal
-//checks diagonal from bottom-left (0,2) to top-right (2,0)
-  threeInARow = true;
-  for (int i = 1; i < rows; i++) {
-    if (grid[0][rows - 1] != grid[i][rows - 1 - i])
-      threeInARow = false;
-  }
-  if (threeInARow)
-    totalWins++;
-
-*/
-//-----------------------------------------------------------------------------------
-//#3:
-/*
-
-*/
-//</winning olutions>
 
 int winMultiplier(int wins) {
     int winMult;
@@ -148,29 +82,37 @@ char getRandomCharacter() {
     return symbols[rand() % sizeof(symbols)]; 
 }
 
-void writeGrid(int rows, int columns, char grid[3][3]) {
-    for (int i = 0; i < rows; i++) {
-        cout << "--------------" << endl; 
-        this_thread::sleep_for(chrono::seconds(1));
-        for (int j = 0; j < columns; j++) {
-            cout << "| ";
-            cout << grid[i][j] << " ";
+void writeGrid(char grid[3][3]) {
+    char symbols[3] = { 'A', 'O', 'X' };
+    for (int i = 0; i < 3; i++) {
+        cout << "-------------" << endl;
+        srand(time(0));
+        for (int j = 0; j < 20; j++) {
+            //writes out random row
+            cout << "| " << symbols[rand() % 3] << " | " << symbols[rand() % 3] << " | " << symbols[rand() % 3] << " |";
+            this_thread::sleep_for(chrono::milliseconds(50));
+            cout << "\x1b[2K\r"; //deletes previous line
         }
-        cout << " |" << endl;
+        //writes out actual line
+        for (int c = 0; c < 3; c++) {
+            cout << "| ";
+            cout << grid[i][c] << " ";
+        }
+        cout << "|" << endl;
     }
-    cout << "--------------" << endl;
-    this_thread::sleep_for(chrono::milliseconds(500));
+    cout << "-------------" << endl;
 }
 
 // for counting winnings
-int countWinningRows(int const rows, int const columns, char grid[3][3]) {
+int countWinning3(char grid[3][3]) {
     int totalWins = 0;
 
     // only counting top row, why? Because threeInARow never reset to true
+    //checks rows from top to bottom
     bool threeInARow = true;
-    for (int i = 0; i < rows; i++) { // goes down
+    for (int i = 0; i < 3; i++) { // goes down
         threeInARow = true;
-        for (int j = 0; j < columns - 1; j++) { // goes right
+        for (int j = 0; j < 3 - 1; j++) { // goes right
             if (grid[i][j] != grid[i][j + 1])
                 threeInARow = false;
         }
@@ -178,10 +120,11 @@ int countWinningRows(int const rows, int const columns, char grid[3][3]) {
             totalWins++;
     }
 
-    // for columns
-    for (int i = 0; i < columns; i++) { // goes right
+    // for 3
+    //checks columns from left to right
+    for (int i = 0; i < 3; i++) { // goes right
         threeInARow = true;
-        for (int j = 0; j < rows - 1; j++) { // goes down
+        for (int j = 0; j < 3 - 1; j++) { // goes down
             if (grid[j][i] != grid[j + 1][i])
                 threeInARow = false;
         }
@@ -189,11 +132,10 @@ int countWinningRows(int const rows, int const columns, char grid[3][3]) {
             totalWins++;
     }
 
-    // field has to be square for this to work. Guess u can't really do diagonal
-    // if not sqaure
     // for \-diagonal
+    //checks diagonal from top-left (0,0) to bottom-right (2,2)
     threeInARow = true;
-    for (int i = 0; i < rows - 1; i++) {
+    for (int i = 0; i < 3 - 1; i++) {
         if (grid[i][i] != grid[i + 1][i + 1])
             threeInARow = false;
     }
@@ -201,9 +143,10 @@ int countWinningRows(int const rows, int const columns, char grid[3][3]) {
         totalWins++;
 
     // for /-diagonal
+    //checks diagonal from bottom-left (0,2) to top-right (2,0)
     threeInARow = true;
-    for (int i = 1; i < rows; i++) {
-        if (grid[0][rows - 1] != grid[i][rows - 1 - i])
+    for (int i = 1; i < 3; i++) {
+        if (grid[0][3 - 1] != grid[i][3 - 1 - i])
             threeInARow = false;
     }
     if (threeInARow)
