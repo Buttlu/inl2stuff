@@ -1,5 +1,6 @@
 #include <iostream>
 using namespace std;
+
 string stringToLower(string str) {
     string emptyStr("");
     char tempChar;

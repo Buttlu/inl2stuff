@@ -25,7 +25,6 @@ int main() {
             grid[i][j] = getRandomCharacter();
     }
 
-
     /*//<testing>
     grid[0][0] = 'X';
     grid[0][1] = 'X';
@@ -73,6 +72,9 @@ int winMultiplier(int wins) {
         winMult = 0;
         break;
     }
+    //consider
+    //int winMults[9] = { 0, 2, 3, 4, 5, 7, 0, 0, 10 };
+    //return winMults[wins];
     cout << "You got a win-multiplier of " << winMult << "!" << endl;
     return winMult;
 }
@@ -82,6 +84,45 @@ char getRandomCharacter() {
     return symbols[rand() % sizeof(symbols)]; 
 }
 
+void writeGrid(char grid[3][3]) {
+    char symbols[3] = { 'A', 'O', 'X' };
+    for (int i = 0; i < 20; i++) {
+        cout << "-------------" << endl;
+        for (int j = 0; j < 3; j++) {
+            cout << "| " << symbols[rand() % 3] << " | " << symbols[rand() % 3] << " | " << symbols[rand() % 3] << " |" << endl;
+            cout << "-------------" << endl;
+        }
+        this_thread::sleep_for(chrono::milliseconds(50));
+        cout << "\x1b[2K\r";
+        cout << "\x1b[2K\r";
+        cout << "\x1b[2K\r";
+        cout << "\x1b[2K\r";
+        cout << "\x1b[2K\r";
+        cout << "\x1b[2K\r";
+        cout << "\x1b[2K\r";
+        cout << "\x1b[2K\r";
+        cout << "\x1b[2K\r";
+        cout << "\x1b[2K\r";
+        cout << "\x1b[2K\r";
+        cout << "\x1b[2K\r";
+    }
+    cout << endl << endl;
+
+    //writes out actual line
+    for (int i = 0; i < 3; i++) {
+        cout << "-------------" << endl;
+        for (int j = 0; j < 3; j++) {
+            cout << "| ";
+            cout << grid[i][j] << " ";
+        }
+        cout << "|" << endl;
+        this_thread::sleep_for(chrono::milliseconds(700));
+    }
+    cout << "-------------" << endl;
+}
+
+
+/* //works but want to try to make a version where entire grid randomizes
 void writeGrid(char grid[3][3]) {
     char symbols[3] = { 'A', 'O', 'X' };
     for (int i = 0; i < 3; i++) {
@@ -102,6 +143,7 @@ void writeGrid(char grid[3][3]) {
     }
     cout << "-------------" << endl;
 }
+*/
 
 // for counting winnings
 int countWinning3(char grid[3][3]) {
