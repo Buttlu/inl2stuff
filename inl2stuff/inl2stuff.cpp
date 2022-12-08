@@ -95,7 +95,7 @@ void writeGrid(char grid[3][3]) {
     bool done = false;
 
     for (int i = 0; i < randomRows; i++) {
-        if (deleteRows == 1) break; //cursor jumps up and down a little bit and delays the result w/o this
+        //if (deleteRows == 1) break; //cursor jumps up and down a little bit and delays the result w/o this
         //writes out the random grid. The random characters don't change the actual grid so they just get
         //overwritten by the actual grid when their time comes
         cout << "-------------" << endl;
@@ -114,7 +114,7 @@ void writeGrid(char grid[3][3]) {
         //writes out the actual rows roughly whenever a third of the main loop is done 
         //the (i - 2) is so the loop enters and writes out the third line of the grid
         //the i > {value} is so that the first row doesn't get written immideatly. 
-        if ((i - 2) % (randomRows / 3) == 0 && i > 5) {
+        if ((i - 3) % (randomRows / 3) == 0 && i > 3) {
             cout << "-------------" << endl;
             cout << "| " << grid[actualRow][0] << " | " << grid[actualRow][1] << " | " << grid[actualRow][2] << " |" << endl;
             //changes values as to not overwrite the actual grid lines
@@ -123,6 +123,10 @@ void writeGrid(char grid[3][3]) {
             deleteRows -= 2;
         }
     }
+    //back to this shit cuz any other way fix it it just breaks whenever it feels like it
+    //the entire actual grid writing part can prob be re-written but that will be another time
+    cout << "-------------" << endl;
+    cout << "| " << grid[2][0] << " | " << grid[2][1] << " | " << grid[2][2] << " |" << endl;
     cout << "-------------" << endl;
 }
 
