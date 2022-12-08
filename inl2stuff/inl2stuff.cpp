@@ -41,6 +41,15 @@ int main() {
     if (totalWins > 0) cout << "You got " << moneyWon << " kr" << endl; //only writes if won
 }
 
+//cleaner win multiplier calculation
+int winMultiplier(int wins) {
+    int winMultipliers[9] = { 1,2,3,4,5,7,8,1,10 };
+    int won = winMultipliers[wins];
+    if (won > 1) cout << "You got a win-multiplier of " << won << "!" << endl;
+    return won;
+}
+
+/*
 int winMultiplier(int wins) {
     int winMult;
     switch (wins) {
@@ -72,6 +81,7 @@ int winMultiplier(int wins) {
     cout << "You got a win-multiplier of " << winMult << "!" << endl;
     return winMult;
 }
+*/
 
 char getRandomCharacter() {
     char symbols[3] = { 'A', 'O', 'X' };
@@ -97,13 +107,14 @@ void writeGrid(char grid[3][3]) {
         //delay for extra suspencion and so the player sees what happens
         delay(50);
         for (int j = 0; j < deleteRows; j++) {
-            cout << "\x1b[A"; //moves up the needed number of lines
+            cout << "\x1b[A"; //moves up the needed number of lines. 7 (all 3 rows) -> 5 (exclude top row) -> 3 (only bottom row)
         }
         cout << "\x1b[J"; //removes all lines below the cursor
 
         //writes out the actual rows roughly whenever a third of the main loop is done 
-        //doesn't enter here to write 3rd actual row. Last dash-row can be fixed other way
-        if ((i - 2) % (randomRows / 3) == 0 && i > 1) {
+        //the (i - 2) is so the loop enters and writes out the third line of the grid
+        //the i > {value} is so that the first row doesn't get written immideatly. 
+        if ((i - 2) % (randomRows / 3) == 0 && i > 5) {
             cout << "-------------" << endl;
             cout << "| " << grid[actualRow][0] << " | " << grid[actualRow][1] << " | " << grid[actualRow][2] << " |" << endl;
             //changes values as to not overwrite the actual grid lines
