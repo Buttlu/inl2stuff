@@ -1,7 +1,5 @@
 #include <ctime>
 #include <iostream>
-#include <chrono>
-#include <thread>
 #include <cctype>
 #include "Misc.h"
 using namespace std;
@@ -72,9 +70,6 @@ int winMultiplier(int wins) {
         winMult = 0;
         break;
     }
-    //consider
-    //int winMults[9] = { 0, 2, 3, 4, 5, 7, 0, 0, 10 };
-    //return winMults[wins];
     cout << "You got a win-multiplier of " << winMult << "!" << endl;
     return winMult;
 }
@@ -84,45 +79,46 @@ char getRandomCharacter() {
     return symbols[rand() % sizeof(symbols)]; 
 }
 
+//version for writing entire grid (3x3) and then the real grid 1 row at a time from top to bottom.
 void writeGrid(char grid[3][3]) {
     char symbols[3] = { 'A', 'O', 'X' };
-    for (int i = 0; i < 20; i++) {
+    int deleteRows = 7, writeRandomRows = 0, actualRow = 0,  randomRows = 69; //randomRows has to be divisible by 3
+    bool done = false;
+
+    for (int i = 0; i < randomRows; i++) {
+        //writes out the random grid. The random characters don't change the actual grid so they just get
+        //overwritten by the actual grid when their time comes
         cout << "-------------" << endl;
-        for (int j = 0; j < 3; j++) {
+        for (int j = writeRandomRows; j < 3; j++) {
             cout << "| " << symbols[rand() % 3] << " | " << symbols[rand() % 3] << " | " << symbols[rand() % 3] << " |" << endl;
             cout << "-------------" << endl;
         }
-        this_thread::sleep_for(chrono::milliseconds(50));
-        cout << "\x1b[2K\r";
-        cout << "\x1b[2K\r";
-        cout << "\x1b[2K\r";
-        cout << "\x1b[2K\r";
-        cout << "\x1b[2K\r";
-        cout << "\x1b[2K\r";
-        cout << "\x1b[2K\r";
-        cout << "\x1b[2K\r";
-        cout << "\x1b[2K\r";
-        cout << "\x1b[2K\r";
-        cout << "\x1b[2K\r";
-        cout << "\x1b[2K\r";
-    }
-    cout << endl << endl;
-
-    //writes out actual line
-    for (int i = 0; i < 3; i++) {
-        cout << "-------------" << endl;
-        for (int j = 0; j < 3; j++) {
-            cout << "| ";
-            cout << grid[i][j] << " ";
+        
+        //delay for extra suspencion and so the player sees what happens
+        delay(50);
+        for (int j = 0; j < deleteRows; j++) {
+            cout << "\x1b[A"; //moves up the needed number of lines
         }
-        cout << "|" << endl;
-        this_thread::sleep_for(chrono::milliseconds(700));
+        cout << "\x1b[J"; //removes all lines below the cursor
+
+        //writes out the actual rows roughly whenever a third of the main loop is done 
+        //doesn't enter here to write 3rd actual row. Last dash-row can be fixed other way
+        if (i % (randomRows / 3) == 0 && i > 1) {
+            cout << "-------------" << endl;
+            cout << "| " << grid[actualRow][0] << " | " << grid[actualRow][1] << " | " << grid[actualRow][2] << " |" << endl;
+            //changes values as to not overwrite the actual grid lines
+            actualRow++;
+            writeRandomRows++;
+            deleteRows -= 2;
+        }
     }
+    //temporary(?) solution. Can probably be solved another but I just can't rn
+    cout << "-------------" << endl;
+    cout << "| " << grid[2][0] << " | " << grid[2][1] << " | " << grid[2][2] << " |" << endl;
     cout << "-------------" << endl;
 }
 
-
-/* //works but want to try to make a version where entire grid randomizes
+/*//works but want to try to make a version where entire grid randomizes
 void writeGrid(char grid[3][3]) {
     char symbols[3] = { 'A', 'O', 'X' };
     for (int i = 0; i < 3; i++) {
@@ -142,8 +138,7 @@ void writeGrid(char grid[3][3]) {
         cout << "|" << endl;
     }
     cout << "-------------" << endl;
-}
-*/
+}*/
 
 // for counting winnings
 int countWinning3(char grid[3][3]) {
@@ -162,7 +157,7 @@ int countWinning3(char grid[3][3]) {
             totalWins++;
     }
 
-    // for 3
+    // for columns
     //checks columns from left to right
     for (int i = 0; i < 3; i++) { // goes right
         threeInARow = true;
