@@ -1,6 +1,5 @@
 #include <ctime>
 #include <iostream>
-#include <cctype>
 #include "Misc.h"
 using namespace std;
 
@@ -86,6 +85,7 @@ void writeGrid(char grid[3][3]) {
     bool done = false;
 
     for (int i = 0; i < randomRows; i++) {
+        if (deleteRows == 1) break; //cursor jumps up and down a little bit and delays the result w/o this
         //writes out the random grid. The random characters don't change the actual grid so they just get
         //overwritten by the actual grid when their time comes
         cout << "-------------" << endl;
@@ -103,7 +103,7 @@ void writeGrid(char grid[3][3]) {
 
         //writes out the actual rows roughly whenever a third of the main loop is done 
         //doesn't enter here to write 3rd actual row. Last dash-row can be fixed other way
-        if (i % (randomRows / 3) == 0 && i > 1) {
+        if ((i - 2) % (randomRows / 3) == 0 && i > 1) {
             cout << "-------------" << endl;
             cout << "| " << grid[actualRow][0] << " | " << grid[actualRow][1] << " | " << grid[actualRow][2] << " |" << endl;
             //changes values as to not overwrite the actual grid lines
@@ -112,13 +112,11 @@ void writeGrid(char grid[3][3]) {
             deleteRows -= 2;
         }
     }
-    //temporary(?) solution. Can probably be solved another but I just can't rn
-    cout << "-------------" << endl;
-    cout << "| " << grid[2][0] << " | " << grid[2][1] << " | " << grid[2][2] << " |" << endl;
     cout << "-------------" << endl;
 }
 
 /*//works but want to try to make a version where entire grid randomizes
+//randomizes and writes 1 row at a time
 void writeGrid(char grid[3][3]) {
     char symbols[3] = { 'A', 'O', 'X' };
     for (int i = 0; i < 3; i++) {
