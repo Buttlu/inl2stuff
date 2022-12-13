@@ -22,27 +22,23 @@ int main() {
             grid[i][j] = getRandomCharacter();
     }
 
-    /*//<testing>
-    grid[0][0] = 'X';
-    grid[0][1] = 'X';
-    grid[0][2] = 'X';
-    grid[1][0] = 'X';
-    grid[1][1] = 'X';
-    grid[1][2] = 'X';
-    grid[2][0] = 'X';
-    grid[2][1] = 'X';
-    grid[2][2] = 'X';
-    *///</testing>
+    //<testing>
+    grid[0][0] = 'A'; grid[0][1] = 'A'; grid[0][2] = 'A';
+    grid[1][0] = 'O'; grid[1][1] = 'O'; grid[1][2] = 'O';
+    grid[2][0] = 'X'; grid[2][1] = 'X'; grid[2][2] = 'X';
+    //</testing>
     writeGrid(grid);
   
     totalWins = countWinning3(grid);
     cout << "\nTotal winning rows: " << totalWins << endl;
     moneyWon = bet * winMultiplier(totalWins);
     if (totalWins > 0) cout << "You got " << moneyWon << " kr" << endl; //only writes if won
+    system("pause");
 }
 
 //cleaner win multiplier calculation
 int winMultiplier(int wins) {
+    //index 0 = 0 wins, index 1 = 1 win, index 2 = 2 wins, etc 
     int winMultipliers[9] = { 1,2,3,4,5,7,8,1,10 };
     int won = winMultipliers[wins];
     if (won > 1) cout << "You got a win-multiplier of " << won << "!" << endl;
@@ -88,6 +84,7 @@ char getRandomCharacter() {
     return symbols[rand() % sizeof(symbols)]; 
 }
 
+//write all random for ~40 times then each line after ~10-20 seconds
 //version for writing entire grid (3x3) and then the real grid 1 row at a time from top to bottom.
 void writeGrid(char grid[3][3]) {
     char symbols[3] = { 'A', 'O', 'X' };
@@ -95,12 +92,14 @@ void writeGrid(char grid[3][3]) {
     bool done = false;
 
     for (int i = 0; i < randomRows; i++) {
-        //if (deleteRows == 1) break; //cursor jumps up and down a little bit and delays the result w/o this
         //writes out the random grid. The random characters don't change the actual grid so they just get
         //overwritten by the actual grid when their time comes
-        cout << "-------------" << endl;
+        cout << "-------------" << endl;        
         for (int j = writeRandomRows; j < 3; j++) {
-            cout << "| " << symbols[rand() % 3] << " | " << symbols[rand() % 3] << " | " << symbols[rand() % 3] << " |" << endl;
+            for (int k = 0; k < 3; k++) {                
+                cout << "| " << symbols[rand() % 3] << " ";                
+            }
+            cout << "|" << endl;
             cout << "-------------" << endl;
         }
         
@@ -112,11 +111,15 @@ void writeGrid(char grid[3][3]) {
         cout << "\x1b[J"; //removes all lines below the cursor
 
         //writes out the actual rows roughly whenever a third of the main loop is done 
-        //the (i - 2) is so the loop enters and writes out the third line of the grid
-        //the i > {value} is so that the first row doesn't get written immideatly. 
-        if ((i - 3) % (randomRows / 3) == 0 && i > 3) {
+        //the (i - 2) is so the loop enters and writes out the third line of the grid LIESLIESLIESLIESLIESLIESLIESLIELSLIESLIESLIESLIESLIESLIES
+        //the i > {value} is so that the first row doesn't get written immediatly. value >= 3
+        if ((i - 1) % (randomRows / 3) == 0 && i > 4) {
             cout << "-------------" << endl;
-            cout << "| " << grid[actualRow][0] << " | " << grid[actualRow][1] << " | " << grid[actualRow][2] << " |" << endl;
+            for (int j = 0; j < 3; j++) {
+                cout << "| " << grid[actualRow][j] << " ";
+            }
+            cout << "|" << endl;
+            //cout << "| " << grid[actualRow][0] << " | " << grid[actualRow][1] << " | " << grid[actualRow][2] << " |" << endl;
             //changes values as to not overwrite the actual grid lines
             actualRow++;
             writeRandomRows++;
