@@ -6,7 +6,7 @@ using namespace std;
 string stringToLower(string str) {
     string emptyStr("");
     char tempChar;
-    for (int i = 0; i < str.string::length(); i++) {
+    for (int i = 0; i < (signed)str.string::length(); i++) {
         tempChar = (char)tolower(str[i]);
         emptyStr.append(1, tempChar);
     }
@@ -20,7 +20,7 @@ void delay(int delayTime) { this_thread::sleep_for(chrono::milliseconds(delayTim
 
 void clearConsoleLines(int deleteRows) {
     for (int j = 0; j < deleteRows; j++) {
-        cout << "\x1b[A"; //moves up the needed number of lines. 7 (all 3 rows) -> 5 (exclude top row) -> 3 (only bottom row)
+        cout << "\x1b[A"; //moves up the needed number of lines.
     }
     cout << "\x1b[J"; //removes all lines below the cursor
 }

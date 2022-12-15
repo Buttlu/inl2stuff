@@ -16,7 +16,7 @@ int main() {
     bet = 10;
     cout << "\nYou're betting " << bet << " kr" << endl << endl;
     system("pause");
-    srand(time(0));
+    srand((unsigned)time(0));
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++)
             grid[i][j] = getRandomCharacter();
