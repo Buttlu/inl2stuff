@@ -22,11 +22,11 @@ int main() {
             grid[i][j] = getRandomCharacter();
     }
 
-    //<testing>
+    /*//<testing>
     grid[0][0] = 'A'; grid[0][1] = 'A'; grid[0][2] = 'A';
     grid[1][0] = 'O'; grid[1][1] = 'O'; grid[1][2] = 'O';
     grid[2][0] = 'X'; grid[2][1] = 'X'; grid[2][2] = 'X';
-    //</testing>
+    *///</testing>
     writeGrid(grid);
   
     totalWins = countWinning3(grid);
@@ -88,7 +88,7 @@ char getRandomCharacter() {
 //version for writing entire grid (3x3) and then the real grid 1 row at a time from top to bottom.
 void writeGrid(char grid[3][3]) {
     char symbols[3] = { 'A', 'O', 'X' };
-    int deleteRows = 7, writeRandomRows = 0, actualRow = 0,  randomRows = 69; //randomRows has to be divisible by 3
+    int deleteRows = 7, writeRandomRows = 0, actualRow = 0,  randomRows = 80; //randomRows has to be divisible by 3
     bool done = false;
 
     for (int i = 0; i < randomRows; i++) {
@@ -105,31 +105,25 @@ void writeGrid(char grid[3][3]) {
         
         //delay for extra suspencion and so the player sees what happens
         delay(50);
-        for (int j = 0; j < deleteRows; j++) {
-            cout << "\x1b[A"; //moves up the needed number of lines. 7 (all 3 rows) -> 5 (exclude top row) -> 3 (only bottom row)
-        }
-        cout << "\x1b[J"; //removes all lines below the cursor
 
-        //writes out the actual rows roughly whenever a third of the main loop is done 
-        //the (i - 2) is so the loop enters and writes out the third line of the grid LIESLIESLIESLIESLIESLIESLIESLIELSLIESLIESLIESLIESLIESLIES
-        //the i > {value} is so that the first row doesn't get written immediatly. value >= 3
-        if ((i - 1) % (randomRows / 3) == 0 && i > 4) {
+        //clears the grid every turn
+        clearConsoleLines(deleteRows);
+
+        //writes out the actual lines after a certain amount of turns have passed
+        //first after half, second after 3/4, and last row on last turn
+        if (i == 39 || i == 59 || i == 79) {
             cout << "-------------" << endl;
             for (int j = 0; j < 3; j++) {
                 cout << "| " << grid[actualRow][j] << " ";
             }
             cout << "|" << endl;
-            //cout << "| " << grid[actualRow][0] << " | " << grid[actualRow][1] << " | " << grid[actualRow][2] << " |" << endl;
             //changes values as to not overwrite the actual grid lines
             actualRow++;
             writeRandomRows++;
             deleteRows -= 2;
         }
     }
-    //back to this shit cuz any other way fix it it just breaks whenever it feels like it
-    //the entire actual grid writing part can prob be re-written but that will be another time
-    cout << "-------------" << endl;
-    cout << "| " << grid[2][0] << " | " << grid[2][1] << " | " << grid[2][2] << " |" << endl;
+    //for writing out the last line of the grid
     cout << "-------------" << endl;
 }
 
